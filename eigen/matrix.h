@@ -3,6 +3,8 @@
 
 */
 
+#include <string> 
+
 class Matrix
 {
 	double** mat; 
@@ -19,16 +21,16 @@ public:
 
 	~matrix();
 
-
-
 	void setElement(int m, int n, double value);
 	double getElement(int m, int n); 
 
+	string pretty(); // Returns a pretty string version of the matrix
+
 	// Operations on self
-	void determinant();
-	void transpose();
-	void invs();
-	void trace();
+	double determinant();
+	Matrix transpose();
+	Matrix invs();
+	double trace();
 
 	// Operations with other matricies
 
