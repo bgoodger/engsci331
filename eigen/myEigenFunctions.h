@@ -1,17 +1,21 @@
-/*****************************************************************************************************
-	myEigenFunctions.h
+/*
+	EIGEN FUNCTION HEADER FILE
+	Ben Goodger
+	1822049
+*/
 
-	This file is where you'll put the header information about the functions you write.  This is just 
-	the argument list (as it is in the first line of your function declarations in myEigenFunctions.cpp)
-	followed by a semi-colon.  Two example functions have been done for you.
+#include <iostream>
+#include <fstream>
+#include <string>
+#include <cmath>
 
-====================================================================================================*/
-
-double DotProduct(double **A, double **B, int n, int m);
-double DotProduct(double *A, double *B, int n);
+#define PI 3.14159265358979323846
+#define eps 0.00000000000000000000001 
 
 void power_method(double **A, double *y, int n, double &lamdba, double delta);
-double Norm(double *A, int n);
+void eigen_all (double **A, double *y, int n, double &lambda, double delta);
+double** deflate (double **A, int n,  double *y, double lambda);
+void eigen_shift (double **A, double *y, int n, double &lambda, double delta);
 
-// Note that these two functions have the same name, but different argument lists.  This is called 
-// "function overloading" and is allowed by C++ compilers.
+double DotProduct(double *A, double *B, int n);
+double Norm(double *A, int n);

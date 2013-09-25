@@ -7,7 +7,7 @@ void eigen_all (double **A, double *y, int n, double &lambda, double delta);
 double Norm(double *A, int n);
 double** deflate (double **A, int n,  double *y, double lambda);
 void eigen_shift (double **A, double *y, int n, double &lambda, double delta);
-
+double DotProduct(double *A, double *B, int n) ;
 using namespace std;
 
 int main (void) {
@@ -47,6 +47,7 @@ int main (void) {
 	return 0;
 }
 
+
 void eigen_shift (double **A, double *y, int n, double &lambda, double delta) {
 
 	double largeLambda; 
@@ -57,7 +58,7 @@ void eigen_shift (double **A, double *y, int n, double &lambda, double delta) {
 
 	power_method(A, y, n, lambda, delta);
 
-	std::cout << "biggest lambda " << " : " << lambda << "\n\n"; 
+	std::cout << "biggest lambda " << " : " << lambda << "\n"; 
 	std::cout << "y"  << ":\n";
 	for(int i = 0; i < n; i++) {
 		std::cout << y[i] << "\n"; 
@@ -68,23 +69,19 @@ void eigen_shift (double **A, double *y, int n, double &lambda, double delta) {
 	for(int i = 0; i < n; i++) {
 		for(int j = 0; j < n; j++) {
 			B[i][j] = A[i][j] -  ((i==j)? largeLambda : 0);
-			cout << B[i][j] << " ";
 		}
 	}
 
 	cout << "\n";
 
-	y[0] = 0;
-	y[1] = 0.5;
-	y[2] = 1;
-
 	power_method(B, y, n, lambda, delta);
 
-	std::cout << "smallest lambda " << " : " << largeLambda - lambda << "\n\n"; 
+	std::cout << "smallest lambda " << " : " << largeLambda - lambda << "\n"; 
 	std::cout << "y"  << ":\n";
 	for(int i = 0; i < n; i++) {
 		std::cout << y[i] << "\n"; 
 	}
+	cout << "\n";
 }
 
 
@@ -163,14 +160,54 @@ void power_method (double **A, double *y, int n, double &lambda, double delta) {
 double Norm(double *A, int n) {
 
 	// Returns the (pythagorean?) norm of a vector
+	return  sqrt(DotProduct(A,A,n));
 
-	double norm = 0.0;
+}
+
+double DotProduct(double **A, double **B, int n, int m)
+{
+	//
+	//	This is a function that takes two matrices A and B of identical dimensions (n*m) and 
+	//  calculates and returns their dot product.
+	//
+	double dot = 0.0;
 
 	for(int i = 0; i < n; i++) {
-		norm += A[i]*A[i];
+		for (int j = 0; j < m; j++) {
+			dot += A[i][j]*B[i][j];
+		}
 	}
+	return dot;
+}
 
-	norm = sqrt(norm);
+double DotProduct(double *A, double *B, int n) 
+{
+	//
+	//	This is a function that takes two vectors A and B of identical length (n) and 
+	//  calculates and returns their dot product.
+	//
 
-	return norm;
+	double dot = 0.0;
+
+	for(int i = 0; i < n; i++) {
+		dot += A[i]*B[i];
+	}
+	return dot;
+
+}
+
+void user_in(double *M, double *K, int n) {
+			cout << "Please enter your masses: \n";
+			for(int i = 0; i < n; i++) {
+				cout<<"m"<< i <<": ";
+				cin >> M[i];
+				cout<<"\n";
+			}
+
+			cout << "Please enter your spring constants: \n";
+			for(int i = 0; i < n; i++) {
+				cout<<"k"<< i <<": ";
+				cin >> K[i];
+				cout<<"\n";
+			}
 }
