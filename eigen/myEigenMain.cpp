@@ -24,7 +24,6 @@
 // suggest you plan out your code first to see what kind of functions you'll use repeatedly and then
 // write them.  
 #include "myEigenFunctions.h"
-#include "Matrix.h"
 using namespace std;
 
 #define PI 3.14159265358979323846
@@ -65,6 +64,10 @@ int main(void)
 	A = new double* [n];
 	for(int i = 0; i < n; i++) 
 		A[i] = new double [n];
+
+
+
+
 
 	// ------------------------------------------------------------------------------------------------
 	//

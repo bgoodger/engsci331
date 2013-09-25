@@ -10,5 +10,8 @@
 double DotProduct(double **A, double **B, int n, int m);
 double DotProduct(double *A, double *B, int n);
 
+void power_method(double **A, double *y, int n, double &lamdba, double delta);
+double Norm(double *A, int n);
+
 // Note that these two functions have the same name, but different argument lists.  This is called 
 // "function overloading" and is allowed by C++ compilers.
