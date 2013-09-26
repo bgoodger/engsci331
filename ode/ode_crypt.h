@@ -1,0 +1,11 @@
+#define dkownob double
+#define ldpwj40y BB
+#define loejtpne CC
+#define dkworypq DD
+#define kdowqnqi EE
+#define oqkrbyoo PI
+#define kdowqpyj cos
+#define sljwp4jt sin
+#define dmowqent exp
+#define slpejyet (x/50)
+#define dlpwjyte f[0]
