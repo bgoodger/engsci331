@@ -54,7 +54,7 @@ void euler(int n, derivative_function dydx, double x_initial, double *y_initial,
     dydx(n, x[k], y[k], f, callCounter);
 
     for (i = 0; i < n; i++) 
-		y[k+1][i] = y[k][i] + step_size*f[i];
+		  y[k+1][i] = y[k][i] + step_size*f[i];
   
     x[k+1] = x[k] + step_size;
   }
@@ -69,7 +69,54 @@ void euler(int n, derivative_function dydx, double x_initial, double *y_initial,
  */
 void improved_euler(int n, derivative_function dydx, double x_initial, double *y_initial, int number_of_steps, double step_size, double *x, double **y, int &callCounter)
 {
+  int i, k;
+  double *f = NULL;
 
+  /* Verify function parameters */
+  assert(n > 0);
+  assert(dydx);
+  assert(y_initial);
+  assert(number_of_steps > 0);
+  assert(step_size > 0.0);
+  assert(x);
+  assert(y);
+  
+  /* Set initial conditions */
+  x[0] = x_initial;
+  for (i = 0; i < n; i++) {
+    y[0][i] = y_initial[i];
+  }
+
+  /* Allocate work vector */
+  f = new double [n];
+  //fest = new double [n];
+
+  /* Iterate using the Euler method */
+  for (k = 0; k < number_of_steps; k++) {
+
+
+    dydx(n, x[k], y[k], f, callCounter);
+
+    // Estimated value, will be overwritten on next iteration
+    for (i = 0; i < n; i++) 
+      y[k+1][i] = y[k][i] + step_size*f[i];
+
+    x[k+1] = x[k] + step_size;
+
+    // Estimated value, will be overwritten on next iteration
+    dydx(n, x[k+1], y[k+1], f, callCounter);
+    
+    // Overwrite estimate
+    for (i = 0; i < n; i++) 
+      y[k+1][i] = y[k][i] + (step_size/2) * (f[i] + f[i+1]);
+    
+
+
+  }
+
+  /* Free work vector */
+  delete [] f;
+  //delete [] fest;
 }
 
 
