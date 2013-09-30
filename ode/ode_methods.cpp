@@ -71,6 +71,7 @@ void improved_euler(int n, derivative_function dydx, double x_initial, double *y
 {
   int i, k;
   double *f = NULL;
+  double *fest = NULL;
 
   /* Verify function parameters */
   assert(n > 0);
@@ -87,13 +88,13 @@ void improved_euler(int n, derivative_function dydx, double x_initial, double *y
     y[0][i] = y_initial[i];
   }
 
-  /* Allocate work vector */
+  /* Allocate work vectors */
   f = new double [n];
+  fest = new double [n];
   //fest = new double [n];
 
-  /* Iterate using the Euler method */
+  /* Iterate using the Improved-Euler method */
   for (k = 0; k < number_of_steps; k++) {
-
 
     dydx(n, x[k], y[k], f, callCounter);
 
@@ -104,19 +105,17 @@ void improved_euler(int n, derivative_function dydx, double x_initial, double *y
     x[k+1] = x[k] + step_size;
 
     // Estimated value, will be overwritten on next iteration
-    dydx(n, x[k+1], y[k+1], f, callCounter);
+    dydx(n, x[k+1], y[k+1], fest, callCounter);
     
     // Overwrite estimate
     for (i = 0; i < n; i++) 
-      y[k+1][i] = y[k][i] + (step_size/2) * (f[i] + f[i+1]);
-    
-
+      y[k+1][i] = y[k][i] + (step_size/2) * (f[i] + fest[i]);
 
   }
 
-  /* Free work vector */
+  // Free work vector 
   delete [] f;
-  //delete [] fest;
+  delete [] fest;
 }
 
 
@@ -125,5 +124,60 @@ void improved_euler(int n, derivative_function dydx, double x_initial, double *y
  */
 void runge_kutta(int n, derivative_function dydx, double x_initial, double *y_initial, int number_of_steps, double step_size, double *x, double **y, int &callCounter)
 {
+
+  int i, k;
+
+  /* Verify function parameters */
+  assert(n > 0);
+  assert(dydx);
+  assert(y_initial);
+  assert(number_of_steps > 0);
+  assert(step_size > 0.0);
+  assert(x);
+  assert(y);
+
+    /* Set initial conditions */
+  x[0] = x_initial;
+  for (i = 0; i < n; i++) {
+    y[0][i] = y_initial[i];
+  }
+
+  /* Allocate work vectors */
+  double* f0 = new double [n];
+  double* f1 = new double [n];
+  double* f2 = new double [n];
+  double* f3 = new double [n];
+
+  /* Iterate using the classical RK4 */
+  for (k = 0; k < number_of_steps; k++) {
+
+    x[k+1] = x[k] + step_size;
+
+    dydx(n, x[k], y[k], f0, callCounter);
+
+    for (i = 0; i < n; i++) 
+      y[k+1][i] = y[k][i] + 0.5*step_size*f0[i];
+
+    dydx(n, x[k] + (step_size/2), y[k+1], f1, callCounter);
+
+    for (i = 0; i < n; i++) 
+      y[k+1][i] = y[k][i] + 0.5*step_size*f1[i];
+
+    dydx(n, x[k] + (step_size/2), y[k+1], f2, callCounter);
+
+    for (i = 0; i < n; i++) 
+      y[k+1][i] = y[k][i] + step_size*f2[i];
+
+    dydx(n, x[k+1], y[k+1], f3, callCounter);
+
+    for (i = 0; i < n; i++) 
+      y[k+1][i] = y[k][i] + (step_size/6) * (f0[i] + 2*(f1[i] + f2[i]) + f3[i]);
+
+  }
   
+    delete [] f0;
+    delete [] f1;
+    delete [] f2;
+    delete [] f3;
+
 }

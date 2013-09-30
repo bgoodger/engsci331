@@ -147,6 +147,10 @@ int main(void)
   //	SOLUTION SECTION:
   //
 
+  // --------------------------- //
+  //		Euler's Method 		 //
+  // --------------------------- //
+
   // Test Euler method 
   euler(n, dydx, x_initial, y_initial, 1, step_size, x, yEuler, callCounter);
   cout << "Single Euler step: y( "<< x_initial + step_size <<" ) = ( ";
@@ -158,6 +162,36 @@ int main(void)
   // Integrate using Euler method 
   euler(n, dydx, x_initial, y_initial, numSteps, step_size, x, yEuler, callCounter);
 
+
+  // --------------------------- //
+  //   Improved Euler's Method   //
+  // --------------------------- //
+
+  // Test Improved Euler method 
+  improved_euler(n, dydx, x_initial, y_initial, 1, step_size, x, yImprovedEuler, callCounter);
+  cout << "Single Improved Euler step: y( "<< x_initial + step_size <<" ) = ( ";
+  for (i = 0; i < n; i++) {
+    cout << yImprovedEuler[0][i] <<" ";
+  }
+  cout << ")"<<endl<<endl;
+
+  // Integrate using im proved Euler method 
+  improved_euler(n, dydx, x_initial, y_initial, numSteps, step_size, x, yImprovedEuler, callCounter);
+
+
+  // --------------------------- //
+  //		Runge-Kutta 		 //
+  // --------------------------- //
+  
+  runge_kutta(n, dydx, x_initial, y_initial, 1, step_size, x, yRungeKutta, callCounter);
+  cout << "Single RK4 step: y( "<< x_initial + step_size <<" ) = ( ";
+  for (i = 0; i < n; i++) {
+    cout << yRungeKutta[0][i] <<" ";
+  }
+  cout << ")"<<endl<<endl;
+
+  // Integrate using RK4  
+  improved_euler(n, dydx, x_initial, y_initial, numSteps, step_size, x, yRungeKutta, callCounter);
 
   //
   //	OUTPUT SECTION:
@@ -179,7 +213,7 @@ int main(void)
 		for (i = 0; i < n; i++) {
 		  results[s] << "yEuler("<<i+1<<")\t";
 		  results[s] << "yIEuler("<<i+1<<")\t";
-		  results[s] << "yRKutta("<<i+1<<")\t";
+		  results[s] << "yRungeKutta("<<i+1<<")\t";
 		}
 		if (functionNumber == 1) {
 		  results[s] << "yAnalytic\t";
