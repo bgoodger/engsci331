@@ -46,6 +46,21 @@ void sample_function_derivative(int n, double x, double *y, double *f, int &call
 void predator_prey_derivative(int n, double x, double *y, double *f, int &callCounter)
 {
 
+  // Verify function parameters 
+  assert(n == 2);
+  assert(y);
+  assert(f);
+
+  double a = 1.2; 
+  double b = 0.6;
+  double c = 0.8; 
+  double d = 0.3; 
+
+  f[0] = (a*y[0]) - (b*y[0]*y[1]); 
+  f[1] = (-1*c*y[1]) + (b*y[0]*y[1]); 
+
+  // Update the counter of dydx function calls:
+  callCounter++;
 }
 
 
@@ -55,6 +70,26 @@ void predator_prey_derivative(int n, double x, double *y, double *f, int &callCo
 
 void bungy_jumper_derivative(int n, double x, double *y, double *f, int &callCounter)
 {
+
+  // Verify function parameters 
+  assert(n == 2);
+  assert(y);
+  assert(f);
+
+  f[0] = y[1];
+
+  double L = 30;
+  double Cd = 0.25;
+  double k = 40; 
+  double gamma = 8;
+  double m = 68.1;
+  double g = 9.81;
+  
+  if (y[0] < L) { // free fall
+    f[1] = g - (((y[0] > 0) - (y[0] < 0)) * (Cd * y[1] * y[1]) / m);
+  } else { // bungy is taught 
+    f[1] = g - (((y[0] > 0) - (y[0] < 0)) * (Cd * y[1] * y[1]) / m) - ((k/m)*(y[0]-L)) - ((gamma/m)*y[1]);
+  }
 
 }
 

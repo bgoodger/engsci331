@@ -67,18 +67,18 @@ int main(void)
     // Predator-prey 
   case 2:
 	// YOU HAVE TO WRITE THIS!
-    cout << " predator-prey model - YOU HAVE TO WRITE THIS! Press any key to exit."<<endl;
-	cin >> n;
-	exit(1);
-	
+    dydx = predator_prey_derivative;
+    n = 2;
+    cout << "blat"<<endl;
+	functionInfo = "blat";
     break;
-
     // Bungy jumper 
   case 3:
     // YOU HAVE TO WRITE THIS!
-	cout << "bungy jumper problem - YOU HAVE TO WRITE THIS! Press any key to exit."<<endl;
-	cin >> n;
-	exit(1);
+    dydx = bungy_jumper_derivative;
+    n = 2;
+    cout << "blat"<<endl;
+	functionInfo = "blat";
     break;
 
     // Orienteering problem 
@@ -191,7 +191,7 @@ int main(void)
   cout << ")"<<endl<<endl;
 
   // Integrate using RK4  
-  improved_euler(n, dydx, x_initial, y_initial, numSteps, step_size, x, yRungeKutta, callCounter);
+  runge_kutta(n, dydx, x_initial, y_initial, numSteps, step_size, x, yRungeKutta, callCounter);
 
   //
   //	OUTPUT SECTION:
