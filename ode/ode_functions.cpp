@@ -57,7 +57,7 @@ void predator_prey_derivative(int n, double x, double *y, double *f, int &callCo
   double d = 0.3; 
 
   f[0] = (a*y[0]) - (b*y[0]*y[1]); 
-  f[1] = (-1*c*y[1]) + (b*y[0]*y[1]); 
+  f[1] = (-1*c*y[1]) + (d*y[0]*y[1]); 
 
   // Update the counter of dydx function calls:
   callCounter++;

@@ -15,7 +15,11 @@
 
 #include "ode_methods.h"
 #include "ode_functions.h"
+
 #include "ode_score.h"
+
+
+
 
 using namespace std;
 
@@ -27,19 +31,25 @@ int main(void)
 	  i, 
 	  k,
 	  numSteps=0,
+	  max_steps,
 	  s=0, 
 	  callCounter=0,
-	  myScore=0;
+	  myScore=0, 
+	  steps_taken=0;
 
   double x_initial = 0,
-		 step_size = 0;
+		 step_size = 0,
+		 x_end = 0;
 	  
   double *y_initial = NULL,
 		 *x = NULL;
 
   double **yEuler = NULL,
 		 **yImprovedEuler = NULL,
-		 **yRungeKutta = NULL;
+		 **yRungeKutta = NULL,
+		 **yDP = NULL;
+
+  double  min_step_size=0,  max_step_size=0;
 
   derivative_function dydx = NULL;
   string functionInfo;
@@ -69,24 +79,25 @@ int main(void)
 	// YOU HAVE TO WRITE THIS!
     dydx = predator_prey_derivative;
     n = 2;
-    cout << "blat"<<endl;
-	functionInfo = "blat";
+    cout << "Predator-prey"<<endl;
+	functionInfo = "Predator-prey";
     break;
     // Bungy jumper 
   case 3:
     // YOU HAVE TO WRITE THIS!
     dydx = bungy_jumper_derivative;
     n = 2;
-    cout << "blat"<<endl;
-	functionInfo = "blat";
+    cout << "Bungy"<<endl;
+	functionInfo = "Bungy";
     break;
 
     // Orienteering problem 
    case 4:
 	// YOU HAVE TO WRITE THIS!
-    cout << "Orienteering problem - YOU HAVE TO WRITE THIS! Press any key to exit."<<endl;
-	cin >> n;
-	exit(1);
+    cout << "Orienteering problem"<<endl;
+    dydx = path_derivative;
+	n = 1;
+	
     break;
 
   default:
@@ -96,6 +107,7 @@ int main(void)
 	break;
   }
   
+
   // Allocate memory for initial conditions 
   y_initial = new double [n];
 
@@ -103,13 +115,31 @@ int main(void)
   cin >> x_initial;
   cout << endl;
 
+
+
+
+ if ( functionNumber == 4){
+  cout << "Enter the end condition for x: ";
+  cin >> x_end;
+  cout << endl;
+  cout << "Enter the max number of steps: ";
+  cin >> max_steps;
+  cout << endl;
+  cout << "Enter the min step size: ";
+  cin >> min_step_size;
+  cout << endl;
+  cout << "Enter the max step size: ";
+  cin >> max_step_size;
+  cout << endl;
+ }
+
+ if ( functionNumber != 4){
   cout << "Enter the "<<n<<" initial condition(s) for y: ";
   for (i = 0; i < n; i++) {
     cin >> y_initial[i];
-  }
-  cout << endl;
-
-  // Read in the method parameters 
+     cout << endl;
+  } 
+    // Read in the method parameters 
   cout << "Enter the step size: ";
   cin >> step_size;
   cout << endl;
@@ -117,6 +147,12 @@ int main(void)
   cout << "Enter the number of steps: ";
   cin >> numSteps;
   cout << endl;
+ } else {
+  	y_initial[0] = AA;
+  }
+ 
+
+
 
   // Output problem parameters 
   cout << "Function number = "<< functionNumber <<endl;
@@ -132,30 +168,50 @@ int main(void)
   cout << "Number of steps = "<< numSteps<<endl<<endl;
   
   // Allocate memory for arrays 
-  x = new double [numSteps+1];
-  yEuler = new double* [numSteps+1];
-  yImprovedEuler = new double* [numSteps+1];
-  yRungeKutta = new double* [numSteps+1];
- 
+
+  if (functionNumber==4){
+
+  	printf("max_steps = %d \n",max_steps );
+  	yDP = new double* [max_steps+1];
+  	x = new double [max_steps+1];
+  } else {
+  	x = new double [numSteps+1];
+  	yEuler = new double* [numSteps+1];
+  	yImprovedEuler = new double* [numSteps+1];
+ 	yRungeKutta = new double* [numSteps+1];
+  }
+
+ if (functionNumber==4){
+ 	for(i = 0; i <= max_steps; i++) {
+	  	yDP[i] = new double[n];
+	  }
+ } else {
   for(i = 0; i <= numSteps; i++) {
+	  
 	  yEuler[i] = new double [n];
 	  yImprovedEuler[i] = new double [n];
 	  yRungeKutta[i] = new double [n];
+	  }
   }
 
   //
   //	SOLUTION SECTION:
   //
 
+
+ if ( functionNumber != 4){
+
   // --------------------------- //
   //		Euler's Method 		 //
   // --------------------------- //
+
+  printf("Euler start\n");
 
   // Test Euler method 
   euler(n, dydx, x_initial, y_initial, 1, step_size, x, yEuler, callCounter);
   cout << "Single Euler step: y( "<< x_initial + step_size <<" ) = ( ";
   for (i = 0; i < n; i++) {
-    cout << yEuler[0][i] <<" ";
+    cout << yEuler[1][i] <<" ";
   }
   cout << ")"<<endl<<endl;
 
@@ -166,18 +222,20 @@ int main(void)
   // --------------------------- //
   //   Improved Euler's Method   //
   // --------------------------- //
+printf(" i Euler start\n");
 
   // Test Improved Euler method 
   improved_euler(n, dydx, x_initial, y_initial, 1, step_size, x, yImprovedEuler, callCounter);
   cout << "Single Improved Euler step: y( "<< x_initial + step_size <<" ) = ( ";
   for (i = 0; i < n; i++) {
-    cout << yImprovedEuler[0][i] <<" ";
+    cout << yImprovedEuler[1][i] <<" ";
   }
   cout << ")"<<endl<<endl;
 
   // Integrate using im proved Euler method 
   improved_euler(n, dydx, x_initial, y_initial, numSteps, step_size, x, yImprovedEuler, callCounter);
 
+printf("rk start\n");
 
   // --------------------------- //
   //		Runge-Kutta 		 //
@@ -186,16 +244,51 @@ int main(void)
   runge_kutta(n, dydx, x_initial, y_initial, 1, step_size, x, yRungeKutta, callCounter);
   cout << "Single RK4 step: y( "<< x_initial + step_size <<" ) = ( ";
   for (i = 0; i < n; i++) {
-    cout << yRungeKutta[0][i] <<" ";
+    cout << yRungeKutta[1][i] <<" ";
   }
   cout << ")"<<endl<<endl;
 
   // Integrate using RK4  
   runge_kutta(n, dydx, x_initial, y_initial, numSteps, step_size, x, yRungeKutta, callCounter);
 
+}
+
+  // --------------------------- //
+  //   Adaptive Runge-Kutta 	 //
+  // --------------------------- //
+
+  if ( functionNumber == 4) {
+  	callCounter=0;
+	  
+	  	assert(n);
+	  	assert(dydx);
+	
+
+	  	assert(x_end);
+
+	  	assert(y_initial);
+
+	  	assert(max_steps);
+
+	  	assert(min_step_size);
+
+	  	assert(max_step_size);
+
+	  	assert(x);
+
+	  	assert(yDP);
+	dormand_prince( n,  dydx,  x_initial,  x_end , y_initial,  max_steps,  min_step_size,  max_step_size,  x,  yDP,  callCounter,steps_taken);
+  }
+
+
+
   //
   //	OUTPUT SECTION:
   //
+
+  printf("Solving is done\n");
+
+
 
   // Open files for outputting results 
   results[0].open("odeResults.txt");
@@ -338,17 +431,21 @@ int main(void)
 			results[s] << endl;
 		}
 
+
 		results[1] << "ode_data=["<<endl;
 
 		for (s = 0; s < 2; s++) {
-			for (k = 0; k <= numSteps; k++) {
+			for (k = 0; k <= steps_taken; k++) {
 				results[s] << k <<"\t"<< x[k] <<"\t";
 				for (i = 0; i < n; i++) {
-					results[s] << yEuler[k][i] << "\t" ;
+					results[s] << yDP[k][i] << "\t" ;
 				}
 				results[s] <<endl;
 			}
 		}
+
+
+		myScore = 2;
 
 		results[1] << "];"<<endl;
 		results[1] << "figure(1);"<<endl;
@@ -361,14 +458,16 @@ int main(void)
   results[0].close();
   results[1].close();
   
+
   // Free allocated memory 
   delete [] y_initial;
   delete [] x;
+  if (functionNumber != 4) {
   for(i=0; i<numSteps+1;i++) {
 	  delete [] yEuler[i];
 	  delete [] yImprovedEuler[i];
 	  delete [] yRungeKutta[i];
   }
-
+}
   return 0;
 }

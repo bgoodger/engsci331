@@ -13,6 +13,8 @@
 #include "ode_functions.h"
 
 #include <math.h>
+
+#define EPS 1e-6
 using namespace std;
 
 
@@ -64,5 +66,5 @@ void improved_euler(int n, derivative_function dydx, double x_initial, double *y
  */
 void runge_kutta(int n, derivative_function dydx, double x_initial, double *y_initial, int number_of_steps, double step_size, double *x, double **y, int &callCounter);
 
-
+void dormand_prince(int n, derivative_function dydx, double x_initial, double x_end, double *y_initial, int max_steps, double min_step_size, double max_step_size, double *x, double **y, int &callCounter, int &steps_taken);
 #endif
